@@ -2,9 +2,9 @@
 <html>
   <head>
     <base target="_top">
-    <title>CoPlan - Legends of Dholakpur Edition</title>
+    <title>CoPlan – Legends of Dholakpur Edition</title>
     <style>
-      /* Base Dark Mode Styling for larger screens */
+      /* Base (Desktop) Styles */
       body {
         font-family: 'Helvetica', sans-serif;
         background: #121212;
@@ -17,9 +17,9 @@
         max-width: 900px;
         margin: auto;
         background: #1e1e1e;
-        padding: 25px;
+        padding: 25px 60px; /* leave extra space for nav buttons on sides on desktop */
         border-radius: 12px;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
         border: 1px solid #333;
       }
       h1 {
@@ -36,11 +36,12 @@
         background: #263238;
         border-radius: 8px;
       }
+      /* For desktop, sections are side by side */
       .sections {
         display: flex;
         justify-content: space-around;
         gap: 20px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
       }
       .section {
         flex: 1;
@@ -48,7 +49,7 @@
         background: #212121;
         border-radius: 8px;
         padding: 20px;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
         border: 1px solid #333;
       }
       .section h2 {
@@ -74,6 +75,7 @@
         font-size: 18px;
         color: #66bb6a;
       }
+      /* Resource Section */
       .resource {
         text-align: center;
         margin-top: 25px;
@@ -91,8 +93,9 @@
         margin: 15px auto;
         max-width: 320px;
         border-radius: 8px;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.7);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
       }
+      /* Backlog Tracker */
       .backlog {
         text-align: center;
         margin-top: 20px;
@@ -102,7 +105,7 @@
         border-radius: 6px;
         border: 1px solid #444;
       }
-      /* Navigation Buttons for larger screens remain as before */
+      /* Navigation Buttons on desktop (positioned inside container at mid-vertical on left/right) */
       .nav-button {
         position: absolute;
         top: 50%;
@@ -116,52 +119,62 @@
         color: #FFA726 !important;
       }
       .nav-left {
-        left: -60px;
+        left: 10px;
       }
       .nav-right {
-        right: -60px;
+        right: 10px;
       }
       
-      /* Mobile/Tablet Adjustments (max-width: 768px) */
-      @media (max-width: 768px) {
-        /* Container: Use flex layout to create two columns */
+      /* Mobile/Tablet Styles (max-width: 768px) */
+      @media screen and (max-width: 768px) {
         .container {
+          padding: 20px;
+        }
+        /* Instead of side-by-side, create a two-column layout:
+           Left column: stacked tasks (Tuntun on top, then Kshitij)
+           Right column: Resource thumbnail, vertically centered */
+        .mobile-wrapper {
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
-          padding: 15px;
         }
-        /* Create a left-column for tasks and a right column for the resource thumbnail */
-        .left-column {
-          flex: 1;
+        .mobile-tasks {
+          flex: 2;
           display: flex;
           flex-direction: column;
           gap: 20px;
-          margin-right: 20px;
         }
-        /* The sections (tasks) are now stacked vertically. Use order to place Tuntun above Kshitij. */
-        .sections {
-          display: flex;
-          flex-direction: column;
+        /* Reorder tasks so that Tuntun's container is on top */
+        .section#tuntunSection {
+          order: 1;
         }
-        #tuntunSection {
-          order: -1;
+        .section#kshitijSection {
+          order: 2;
         }
+        /* Ensure these task containers are left aligned and have adequate margin */
         .section {
+          margin: 0 10px;
           width: 100%;
         }
-        /* Right column for resource: ensure it's vertically centered */
         .resource {
-          max-width: 40%;
-          align-self: center;
-          margin: 0;
+          flex: 1;
+          text-align: center;
         }
-        /* Place the navigation buttons at the top left and top right corners of the container */
+        .resource .thumbnail {
+          margin: auto;
+          max-width: 100%;
+        }
+        /* Adjust day row: now contains the mobile-wrapper */
+        .day-row {
+          display: block;
+        }
+        /* Navigation buttons: position them at top left and top right of the container */
         .nav-button {
           position: absolute;
           top: 10px;
-          font-size: 40px;
+          font-size: 36px;
+          color: #FFA726 !important;
         }
         .nav-left {
           left: 10px;
@@ -169,99 +182,137 @@
         .nav-right {
           right: 10px;
         }
-        /* Backlog tracker: move it below the container with extra spacing */
-        .backlog {
-          position: relative;
-          margin-top: 20px;
-        }
-        /* Adjust heading font sizes for readability on mobile */
-        h1 {
-          font-size: 22px;
-        }
-        h3 {
-          font-size: 18px;
-        }
       }
     </style>
   </head>
   <body>
-    <!-- Backlog Tracker remains below the main container -->
-    <div class="backlog" id="backlogTracker">
-      <!-- Backlog counts loaded dynamically -->
-    </div>
-    
     <div class="container">
-      <h1>CoPlan - Legends of Dholakpur Edition</h1>
+      <h1>CoPlan – Legends of Dholakpur Edition</h1>
       
-      <!-- Navigation Buttons for mobile (positioned at top corners) -->
+      <!-- Navigation Buttons for Desktop (will be repositioned on mobile via media query) -->
       <button class="nav-button nav-left" onclick="moveToPreviousDay()" title="Travel back in time">&#x23EA;</button>
       <button class="nav-button nav-right" onclick="moveToNextDay()" title="Travel to the future">&#x23E9;</button>
       
-      <!-- For mobile, wrap tasks and resource into two columns -->
-      <div class="mobile-wrapper">
-        <div class="left-column">
-          <!-- Day Row with tasks -->
-          <div class="day-row" id="dayRow">
-            <h3 id="dayHeader"></h3>
-            <div class="sections">
-              <!-- Section for Kshitij -->
-              <div class="section" id="kshitijSection">
-                <h2>Kshitij</h2>
-                <div class="task">
-                  <label>
-                    Newsletter + Quiz 
-                    <input type="checkbox" id="ks_news" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
-                  </label>
-                </div>
-                <div class="task">
-                  <label>
-                    Editorial IE 
-                    <input type="checkbox" id="ks_edit" onchange="markDone('Editorial IE', 'Kshitij', this)">
-                  </label>
-                </div>
-                <div class="task">
-                  <label>
-                    Watch 
-                    <input type="checkbox" id="ks_watch" onchange="markDone('Watch', 'Kshitij', this)">
-                  </label>
-                </div>
-              </div>
-              
-              <!-- Section for Tuntun -->
-              <div class="section" id="tuntunSection">
-                <h2>Tuntun</h2>
-                <div class="task">
-                  <label>
-                    Newsletter + Quiz 
-                    <input type="checkbox" id="tt_news" onchange="markDone('Newsletter + Quiz', 'Tuntun', this)">
-                  </label>
-                </div>
-                <div class="task">
-                  <label>
-                    Editorial IE 
-                    <input type="checkbox" id="tt_edit" onchange="markDone('Editorial IE', 'Tuntun', this)">
-                  </label>
-                </div>
-                <div class="task">
-                  <label>
-                    Watch 
-                    <input type="checkbox" id="tt_watch" onchange="markDone('Watch', 'Tuntun', this)">
-                  </label>
-                </div>
-              </div>
+      <!-- Day Row -->
+      <div class="day-row" id="dayRow">
+        <h3 id="dayHeader"></h3>
+        
+        <!-- For desktop, .sections shows side by side; for mobile, we use .mobile-wrapper -->
+        <div class="sections" id="sectionsContainer">
+          <!-- Section for Kshitij -->
+          <div class="section" id="kshitijSection">
+            <h2>Kshitij</h2>
+            <div class="task">
+              <label>
+                Newsletter + Quiz 
+                <input type="checkbox" id="ks_news" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
+              </label>
             </div>
-            <div id="compliment"></div>
+            <div class="task">
+              <label>
+                Editorial IE 
+                <input type="checkbox" id="ks_edit" onchange="markDone('Editorial IE', 'Kshitij', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Watch 
+                <input type="checkbox" id="ks_watch" onchange="markDone('Watch', 'Kshitij', this)">
+              </label>
+            </div>
+          </div>
+          
+          <!-- Section for Tuntun -->
+          <div class="section" id="tuntunSection">
+            <h2>Tuntun</h2>
+            <div class="task">
+              <label>
+                Newsletter + Quiz 
+                <input type="checkbox" id="tt_news" onchange="markDone('Newsletter + Quiz', 'Tuntun', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Editorial IE 
+                <input type="checkbox" id="tt_edit" onchange="markDone('Editorial IE', 'Tuntun', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Watch 
+                <input type="checkbox" id="tt_watch" onchange="markDone('Watch', 'Tuntun', this)">
+              </label>
+            </div>
           </div>
         </div>
-        <!-- Right column for Resource -->
-        <div class="resource" id="resourceSection">
-          <!-- Content loaded dynamically -->
+        <div id="compliment"></div>
+      </div>
+      
+      <!-- For Mobile: Wrap tasks and resource into a two-column layout -->
+      <div class="mobile-wrapper" id="mobileWrapper" style="display:none;">
+        <div class="mobile-tasks">
+          <!-- We re-use the same sections but order them via CSS -->
+          <div class="section" id="tuntunSectionMobile">
+            <h2>Tuntun</h2>
+            <div class="task">
+              <label>
+                Newsletter + Quiz 
+                <input type="checkbox" id="tt_news_mobile" onchange="markDone('Newsletter + Quiz', 'Tuntun', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Editorial IE 
+                <input type="checkbox" id="tt_edit_mobile" onchange="markDone('Editorial IE', 'Tuntun', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Watch 
+                <input type="checkbox" id="tt_watch_mobile" onchange="markDone('Watch', 'Tuntun', this)">
+              </label>
+            </div>
+          </div>
+          <div class="section" id="kshitijSectionMobile">
+            <h2>Kshitij</h2>
+            <div class="task">
+              <label>
+                Newsletter + Quiz 
+                <input type="checkbox" id="ks_news_mobile" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Editorial IE 
+                <input type="checkbox" id="ks_edit_mobile" onchange="markDone('Editorial IE', 'Kshitij', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Watch 
+                <input type="checkbox" id="ks_watch_mobile" onchange="markDone('Watch', 'Kshitij', this)">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="resource" id="resourceSectionMobile">
+          <!-- Resource thumbnail will load here -->
         </div>
       </div>
+      
+      <!-- Unified Resource Section for Desktop (already above mobile wrapper) -->
+      <div class="resource" id="resourceSection">
+        <!-- Content loaded dynamically -->
+      </div>
+      
+      <!-- Backlog Tracker -->
+      <div class="backlog" id="backlogTracker">
+        <!-- Backlog counts loaded dynamically -->
+      </div>
     </div>
-    
+  
     <script>
-      // API URL from your deployed Google Apps Script Web App.
+      // Replace with your deployed Google Apps Script Web App URL.
       const API_URL = "https://script.google.com/macros/s/AKfycbzss4Ki0Ods_s0sW5TAhwtLbUuF1Be9CFZBw1NvGCgS5rX6M-VMFevYZOx3KoBRKlQI/exec";
       
       let currentDate;
@@ -273,12 +324,14 @@
           currentDate = new Date(minDate);
         }
         updateDateDisplay();
+        handleResponsiveLayout();
+        window.addEventListener("resize", handleResponsiveLayout);
       };
       
       function updateDateDisplay() {
         const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
         document.getElementById('dayHeader').innerText = currentDate.toLocaleDateString('en-GB', options);
-        // For 25-03-2025, row = 3; each subsequent day adds one.
+        // For 25-03-2025, row = 3; each day later adds 1.
         const diffDays = Math.floor((currentDate - minDate) / (24 * 60 * 60 * 1000));
         const dataRow = 3 + diffDays;
         document.getElementById('dayRow').setAttribute('data-row', dataRow);
@@ -304,7 +357,7 @@
         return document.getElementById('dayRow').getAttribute('data-row');
       }
       
-      // Call API to mark an activity as done.
+      // Call API to mark activity done.
       function markDone(activity, userName, checkbox) {
         const row = getCurrentRow();
         if (checkbox.checked) {
@@ -317,7 +370,7 @@
         }
       }
       
-      // Load the resource (or mock message) for the current row.
+      // Load resource from API.
       function loadResource() {
         const row = getCurrentRow();
         fetch(`${API_URL}?action=getResource&row=${row}`)
@@ -326,10 +379,12 @@
             if (data.link) {
               if (data.link.trim().toUpperCase() === "MOCKS") {
                 document.getElementById('resourceSection').innerHTML = `<h3>Attempt your mock</h3>`;
+                document.getElementById('resourceSectionMobile').innerHTML = `<h3>Attempt your mock</h3>`;
               } else {
                 const videoId = extractYouTubeId(data.link);
+                let content = "";
                 if (videoId) {
-                  document.getElementById('resourceSection').innerHTML = `
+                  content = `
                     <h3>Watch Resource</h3>
                     <a href="${data.link}" target="_blank">
                       <img class="thumbnail" src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="Watch Thumbnail">
@@ -337,28 +392,39 @@
                     </a>
                   `;
                 } else {
-                  document.getElementById('resourceSection').innerHTML = `<h3>Watch Resource</h3><p>${data.link}</p>`;
+                  content = `<h3>Watch Resource</h3><p>${data.link}</p>`;
                 }
+                document.getElementById('resourceSection').innerHTML = content;
+                document.getElementById('resourceSectionMobile').innerHTML = content;
               }
             } else {
               document.getElementById('resourceSection').innerHTML = `<h3>No Resource Available</h3>`;
+              document.getElementById('resourceSectionMobile').innerHTML = `<h3>No Resource Available</h3>`;
             }
           })
           .catch(error => console.error('Error:', error));
       }
       
-      // Load task statuses for the current row.
+      // Load task statuses.
       function loadTaskStatus() {
         const row = getCurrentRow();
         fetch(`${API_URL}?action=getTaskStatus&row=${row}`)
           .then(response => response.json())
           .then(status => {
+            // Desktop version
             document.getElementById('ks_news').checked = status.Kshitij["Newsletter + Quiz"];
             document.getElementById('ks_edit').checked = status.Kshitij["Editorial IE"];
             document.getElementById('ks_watch').checked = status.Kshitij["Watch"];
             document.getElementById('tt_news').checked = status.Tuntun["Newsletter + Quiz"];
             document.getElementById('tt_edit').checked = status.Tuntun["Editorial IE"];
             document.getElementById('tt_watch').checked = status.Tuntun["Watch"];
+            // Mobile version
+            document.getElementById('ks_news_mobile').checked = status.Kshitij["Newsletter + Quiz"];
+            document.getElementById('ks_edit_mobile').checked = status.Kshitij["Editorial IE"];
+            document.getElementById('ks_watch_mobile').checked = status.Kshitij["Watch"];
+            document.getElementById('tt_news_mobile').checked = status.Tuntun["Newsletter + Quiz"];
+            document.getElementById('tt_edit_mobile').checked = status.Tuntun["Editorial IE"];
+            document.getElementById('tt_watch_mobile').checked = status.Tuntun["Watch"];
           })
           .catch(error => console.error('Error:', error));
       }
@@ -378,11 +444,23 @@
           .catch(error => console.error('Error:', error));
       }
       
-      // Utility: Extract YouTube video ID from a URL.
+      // Utility: Extract YouTube video ID.
       function extractYouTubeId(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
         return (match && match[2].length === 11) ? match[2] : null;
+      }
+      
+      // Handle responsive layout: switch between desktop and mobile layouts.
+      function handleResponsiveLayout() {
+        if (window.innerWidth <= 768) {
+          // Hide the desktop sections and show the mobile wrapper.
+          document.getElementById('sectionsContainer').style.display = "none";
+          document.getElementById('mobileWrapper').style.display = "flex";
+        } else {
+          document.getElementById('sectionsContainer').style.display = "flex";
+          document.getElementById('mobileWrapper').style.display = "none";
+        }
       }
     </script>
   </body>
