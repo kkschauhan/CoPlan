@@ -2,7 +2,7 @@
 <html>
   <head>
     <base target="_top">
-    <title>Co Plan - Daily Planner</title>
+    <title>CoPlan - Legends of Dholakpur Edition</title>
     <style>
       /* Dark Mode Styling with Orange navigation buttons */
       body {
@@ -124,9 +124,68 @@
       .nav-right {
         right: -60px;
       }
+      /* Mobile adjustments */
+      @media (max-width: 600px) {
+        body {
+          padding: 10px;
+        }
+        .container {
+          width: 100%;
+          max-width: none;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+          border-radius: 12px 12px 0 0;
+          padding: 15px;
+          box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6);
+        }
+        h1 {
+          font-size: 20px;
+        }
+        h3 {
+          font-size: 16px;
+        }
+        .sections {
+          flex-direction: column;
+          align-items: center;
+        }
+        .section {
+          width: 90%;
+          margin: 10px 0;
+        }
+        .nav-button {
+          position: fixed;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 40px;
+          z-index: 10;
+        }
+        .nav-left {
+          left: 10px;
+        }
+        .nav-right {
+          right: 10px;
+        }
+        .backlog {
+          position: fixed;
+          top: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90%;
+          max-width: 600px;
+          z-index: 10;
+        }
+      }
     </style>
   </head>
   <body>
+    <!-- Backlog Tracker (for mobile, fixed at the top) -->
+    <div class="backlog" id="backlogTracker">
+      <!-- Backlog counts loaded dynamically -->
+    </div>
+    
     <div class="container">
       <h1>CoPlan - Legends of Dholakpur Edition</h1>
       
@@ -189,18 +248,13 @@
         <!-- Content loaded dynamically -->
       </div>
       
-      <!-- Backlog Tracker -->
-      <div class="backlog" id="backlogTracker">
-        <!-- Backlog counts loaded dynamically -->
-      </div>
-      
       <!-- Navigation Buttons on left and right sides of container -->
       <button class="nav-button nav-left" onclick="moveToPreviousDay()" title="Travel back in time">&#x23EA;</button>
       <button class="nav-button nav-right" onclick="moveToNextDay()" title="Travel to the future">&#x23E9;</button>
     </div>
   
     <script>
-      // Replace with your deployed Google Apps Script Web App URL.
+      // API URL from your deployed Google Apps Script Web App.
       const API_URL = "https://script.google.com/macros/s/AKfycbzss4Ki0Ods_s0sW5TAhwtLbUuF1Be9CFZBw1NvGCgS5rX6M-VMFevYZOx3KoBRKlQI/exec";
       
       let currentDate;
@@ -217,6 +271,7 @@
       function updateDateDisplay() {
         const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
         document.getElementById('dayHeader').innerText = currentDate.toLocaleDateString('en-GB', options);
+        // For 25-03-2025, row = 3; each subsequent day adds 1.
         const diffDays = Math.floor((currentDate - minDate) / (24 * 60 * 60 * 1000));
         const dataRow = 3 + diffDays;
         document.getElementById('dayRow').setAttribute('data-row', dataRow);
@@ -285,7 +340,7 @@
           .catch(error => console.error('Error:', error));
       }
       
-      // Load task statuses (checked/unchecked) for the current row.
+      // Load task statuses for the current row.
       function loadTaskStatus() {
         const row = getCurrentRow();
         fetch(`${API_URL}?action=getTaskStatus&row=${row}`)
@@ -301,7 +356,7 @@
           .catch(error => console.error('Error:', error));
       }
       
-      // Load backlog counts from the API.
+      // Load backlog counts.
       function loadBacklog() {
         const row = getCurrentRow();
         fetch(`${API_URL}?action=getBacklogCounts&row=${row}`)
