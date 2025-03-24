@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Co Plan - Daily Planner</title>
+    <style>
+      /* Dark Mode Styling with Orange navigation buttons */
+      body {
+        font-family: 'Helvetica', sans-serif;
+        background: #121212;
+        margin: 0;
+        padding: 20px;
+        color: #e0e0e0;
+      }
+      .container {
+        position: relative;
+        max-width: 900px;
+        margin: auto;
+        background: #1e1e1e;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        border: 1px solid #333;
+      }
+      h1 {
+        text-align: center;
+        color: #80cbc4;
+      }
+      h3 {
+        text-align: center;
+        color: #b0bec5;
+      }
+      .day-row {
+        margin-bottom: 20px;
+        padding: 20px;
+        background: #263238;
+        border-radius: 8px;
+      }
+      /* Sections displayed side by side */
+      .sections {
+        display: flex;
+        justify-content: space-around;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .section {
+        flex: 1;
+        min-width: 300px;
+        background: #212121;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+        border: 1px solid #333;
+      }
+      .section h2 {
+        text-align: center;
+        color: #80cbc4;
+        margin-bottom: 15px;
+      }
+      .task {
+        margin: 12px 0;
+        font-size: 16px;
+        color: #e0e0e0;
+      }
+      .task label {
+        cursor: pointer;
+      }
+      .task input[type="checkbox"] {
+        margin-left: 10px;
+        transform: scale(1.2);
+      }
+      #compliment {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 18px;
+        color: #66bb6a;
+      }
+      /* Unified Resource Section */
+      .resource {
+        text-align: center;
+        margin-top: 25px;
+      }
+      .resource a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .resource a:hover {
+        text-decoration: underline;
+      }
+      .thumbnail {
+        display: block;
+        margin: 15px auto;
+        max-width: 320px;
+        border-radius: 8px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
+      }
+      /* Backlog Tracker styling */
+      .backlog {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+        padding: 10px;
+        background: #2c3e50;
+        border-radius: 6px;
+        border: 1px solid #444;
+      }
+      /* Navigation buttons on left and right sides of container, vertically centered */
+      .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 36px;
+        color: #FFA726 !important;
+      }
+      .nav-left {
+        left: -60px;
+      }
+      .nav-right {
+        right: -60px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Co Plan - Daily Planner</h1>
+      
+      <!-- Day Row -->
+      <div class="day-row" id="dayRow">
+        <h3 id="dayHeader"></h3>
+        
+        <div class="sections">
+          <!-- Section for Kshitij -->
+          <div class="section" id="kshitijSection">
+            <h2>Kshitij</h2>
+            <div class="task">
+              <label>
+                Newsletter + Quiz 
+                <input type="checkbox" id="ks_news" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Editorial IE 
+                <input type="checkbox" id="ks_edit" onchange="markDone('Editorial IE', 'Kshitij', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Watch 
+                <input type="checkbox" id="ks_watch" onchange="markDone('Watch', 'Kshitij', this)">
+              </label>
+            </div>
+          </div>
+          
+          <!-- Section for Tuntun -->
+          <div class="section" id="tuntunSection">
+            <h2>Tuntun</h2>
+            <div class="task">
+              <label>
+                Newsletter + Quiz 
+                <input type="checkbox" id="tt_news" onchange="markDone('Newsletter + Quiz', 'Tuntun', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Editorial IE 
+                <input type="checkbox" id="tt_edit" onchange="markDone('Editorial IE', 'Tuntun', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Watch 
+                <input type="checkbox" id="tt_watch" onchange="markDone('Watch', 'Tuntun', this)">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div id="compliment"></div>
+      </div>
+      
+      <!-- Unified Resource Section -->
+      <div class="resource" id="resourceSection">
+        <!-- Content loaded dynamically -->
+      </div>
+      
+      <!-- Backlog Tracker -->
+      <div class="backlog" id="backlogTracker">
+        <!-- Backlog counts loaded dynamically -->
+      </div>
+      
+      <!-- Navigation Buttons on left and right sides of container -->
+      <button class="nav-button nav-left" onclick="moveToPreviousDay()" title="Travel back in time">&#x23EA;</button>
+      <button class="nav-button nav-right" onclick="moveToNextDay()" title="Travel to the future">&#x23E9;</button>
+    </div>
+  
+    <script>
+      // Replace with your deployed Google Apps Script Web App URL.
+      const API_URL = "https://script.google.com/macros/s/AKfycbzss4Ki0Ods_s0sW5TAhwtLbUuF1Be9CFZBw1NvGCgS5rX6M-VMFevYZOx3KoBRKlQI/exec";
+      
+      let currentDate;
+      const minDate = new Date(2025, 2, 25);
+      
+      window.onload = function() {
+        currentDate = new Date();
+        if (currentDate < minDate) {
+          currentDate = new Date(minDate);
+        }
+        updateDateDisplay();
+      };
+      
+      function updateDateDisplay() {
+        const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
+        document.getElementById('dayHeader').innerText = currentDate.toLocaleDateString('en-GB', options);
+        const diffDays = Math.floor((currentDate - minDate) / (24 * 60 * 60 * 1000));
+        const dataRow = 3 + diffDays;
+        document.getElementById('dayRow').setAttribute('data-row', dataRow);
+        loadResource();
+        loadTaskStatus();
+        loadBacklog();
+      }
+      
+      function moveToNextDay() {
+        currentDate.setDate(currentDate.getDate() + 1);
+        updateDateDisplay();
+      }
+      
+      function moveToPreviousDay() {
+        currentDate.setDate(currentDate.getDate() - 1);
+        if (currentDate < minDate) {
+          currentDate = new Date(minDate);
+        }
+        updateDateDisplay();
+      }
+      
+      function getCurrentRow() {
+        return document.getElementById('dayRow').getAttribute('data-row');
+      }
+      
+      // Call API to mark an activity as done.
+      function markDone(activity, userName, checkbox) {
+        const row = getCurrentRow();
+        if (checkbox.checked) {
+          fetch(`${API_URL}?action=markActivityDone&row=${row}&activity=${encodeURIComponent(activity)}&userName=${encodeURIComponent(userName)}`)
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('compliment').innerText = data.message;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      }
+      
+      // Load the resource (or mock message) for the current row.
+      function loadResource() {
+        const row = getCurrentRow();
+        fetch(`${API_URL}?action=getResource&row=${row}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.link) {
+              if (data.link.trim().toUpperCase() === "MOCKS") {
+                document.getElementById('resourceSection').innerHTML = `<h3>Attempt your mock</h3>`;
+              } else {
+                const videoId = extractYouTubeId(data.link);
+                if (videoId) {
+                  document.getElementById('resourceSection').innerHTML = `
+                    <h3>Watch Resource</h3>
+                    <a href="${data.link}" target="_blank">
+                      <img class="thumbnail" src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="Watch Thumbnail">
+                      <div>Watch this video</div>
+                    </a>
+                  `;
+                } else {
+                  document.getElementById('resourceSection').innerHTML = `<h3>Watch Resource</h3><p>${data.link}</p>`;
+                }
+              }
+            } else {
+              document.getElementById('resourceSection').innerHTML = `<h3>No Resource Available</h3>`;
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+      
+      // Load task statuses (checked/unchecked) for the current row.
+      function loadTaskStatus() {
+        const row = getCurrentRow();
+        fetch(`${API_URL}?action=getTaskStatus&row=${row}`)
+          .then(response => response.json())
+          .then(status => {
+            document.getElementById('ks_news').checked = status.Kshitij["Newsletter + Quiz"];
+            document.getElementById('ks_edit').checked = status.Kshitij["Editorial IE"];
+            document.getElementById('ks_watch').checked = status.Kshitij["Watch"];
+            document.getElementById('tt_news').checked = status.Tuntun["Newsletter + Quiz"];
+            document.getElementById('tt_edit').checked = status.Tuntun["Editorial IE"];
+            document.getElementById('tt_watch').checked = status.Tuntun["Watch"];
+          })
+          .catch(error => console.error('Error:', error));
+      }
+      
+      // Load backlog counts from the API.
+      function loadBacklog() {
+        const row = getCurrentRow();
+        fetch(`${API_URL}?action=getBacklogCounts&row=${row}`)
+          .then(response => response.json())
+          .then(backlog => {
+            document.getElementById('backlogTracker').innerHTML = `
+              <strong>Backlog Tracker:</strong> 
+              Kshitij: ${backlog.Kshitij} day(s), 
+              Tuntun: ${backlog.Tuntun} day(s)
+            `;
+          })
+          .catch(error => console.error('Error:', error));
+      }
+      
+      // Utility: Extract YouTube video ID from URL.
+      function extractYouTubeId(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+      }
+    </script>
+  </body>
+</html>
