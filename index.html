@@ -4,7 +4,7 @@
     <base target="_top">
     <title>CoPlan - Legends of Dholakpur Edition</title>
     <style>
-      /* Dark Mode Styling with Orange navigation buttons */
+      /* Base Dark Mode Styling */
       body {
         font-family: 'Helvetica', sans-serif;
         background: #121212;
@@ -36,7 +36,7 @@
         background: #263238;
         border-radius: 8px;
       }
-      /* Sections displayed side by side */
+      /* Sections: default side-by-side layout */
       .sections {
         display: flex;
         justify-content: space-around;
@@ -75,10 +75,12 @@
         font-size: 18px;
         color: #66bb6a;
       }
-      /* Unified Resource Section */
+      /* Resource Section */
       .resource {
         text-align: center;
         margin-top: 25px;
+        /* Allow full-width on mobile */
+        max-width: 100%;
       }
       .resource a {
         color: #e0e0e0;
@@ -92,10 +94,11 @@
         display: block;
         margin: 15px auto;
         max-width: 320px;
+        width: 100%;
         border-radius: 8px;
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
       }
-      /* Backlog Tracker styling */
+      /* Backlog Tracker */
       .backlog {
         text-align: center;
         margin-top: 20px;
@@ -105,7 +108,7 @@
         border-radius: 6px;
         border: 1px solid #444;
       }
-      /* Navigation buttons on left and right sides of container, vertically centered */
+      /* Navigation Buttons on left/right sides of container */
       .nav-button {
         position: absolute;
         top: 50%;
@@ -124,7 +127,8 @@
       .nav-right {
         right: -60px;
       }
-      /* Mobile adjustments */
+      
+      /* Mobile adjustments for screens below 600px */
       @media (max-width: 600px) {
         body {
           padding: 10px;
@@ -147,14 +151,21 @@
         h3 {
           font-size: 16px;
         }
+        /* Rearrange sections: Tuntun on top, Kshitij below */
         .sections {
           flex-direction: column;
           align-items: center;
         }
-        .section {
+        #tuntunSection {
+          order: 1;
           width: 90%;
-          margin: 10px 0;
+          margin-bottom: 15px;
         }
+        #kshitijSection {
+          order: 2;
+          width: 90%;
+        }
+        /* Adjust navigation buttons to be inside the screen boundaries */
         .nav-button {
           position: fixed;
           top: 50%;
@@ -163,11 +174,12 @@
           z-index: 10;
         }
         .nav-left {
-          left: 10px;
+          left: 5px;
         }
         .nav-right {
-          right: 10px;
+          right: 5px;
         }
+        /* Backlog Tracker fixed at the top */
         .backlog {
           position: fixed;
           top: 10px;
@@ -181,7 +193,7 @@
     </style>
   </head>
   <body>
-    <!-- Backlog Tracker (for mobile, fixed at the top) -->
+    <!-- Backlog Tracker (visible on mobile fixed at the top) -->
     <div class="backlog" id="backlogTracker">
       <!-- Backlog counts loaded dynamically -->
     </div>
@@ -194,30 +206,7 @@
         <h3 id="dayHeader"></h3>
         
         <div class="sections">
-          <!-- Section for Kshitij -->
-          <div class="section" id="kshitijSection">
-            <h2>Kshitij</h2>
-            <div class="task">
-              <label>
-                Newsletter + Quiz 
-                <input type="checkbox" id="ks_news" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
-              </label>
-            </div>
-            <div class="task">
-              <label>
-                Editorial IE 
-                <input type="checkbox" id="ks_edit" onchange="markDone('Editorial IE', 'Kshitij', this)">
-              </label>
-            </div>
-            <div class="task">
-              <label>
-                Watch 
-                <input type="checkbox" id="ks_watch" onchange="markDone('Watch', 'Kshitij', this)">
-              </label>
-            </div>
-          </div>
-          
-          <!-- Section for Tuntun -->
+          <!-- Tuntun's Container (order set in mobile) -->
           <div class="section" id="tuntunSection">
             <h2>Tuntun</h2>
             <div class="task">
@@ -239,6 +228,29 @@
               </label>
             </div>
           </div>
+          
+          <!-- Kshitij's Container (order set in mobile) -->
+          <div class="section" id="kshitijSection">
+            <h2>Kshitij</h2>
+            <div class="task">
+              <label>
+                Newsletter + Quiz 
+                <input type="checkbox" id="ks_news" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Editorial IE 
+                <input type="checkbox" id="ks_edit" onchange="markDone('Editorial IE', 'Kshitij', this)">
+              </label>
+            </div>
+            <div class="task">
+              <label>
+                Watch 
+                <input type="checkbox" id="ks_watch" onchange="markDone('Watch', 'Kshitij', this)">
+              </label>
+            </div>
+          </div>
         </div>
         <div id="compliment"></div>
       </div>
@@ -248,13 +260,13 @@
         <!-- Content loaded dynamically -->
       </div>
       
-      <!-- Navigation Buttons on left and right sides of container -->
+      <!-- Navigation Buttons (placed along the left/right sides of the container) -->
       <button class="nav-button nav-left" onclick="moveToPreviousDay()" title="Travel back in time">&#x23EA;</button>
       <button class="nav-button nav-right" onclick="moveToNextDay()" title="Travel to the future">&#x23E9;</button>
     </div>
   
     <script>
-      // API URL from your deployed Google Apps Script Web App.
+      // Set your deployed Google Apps Script Web App URL here.
       const API_URL = "https://script.google.com/macros/s/AKfycbzss4Ki0Ods_s0sW5TAhwtLbUuF1Be9CFZBw1NvGCgS5rX6M-VMFevYZOx3KoBRKlQI/exec";
       
       let currentDate;
@@ -271,7 +283,7 @@
       function updateDateDisplay() {
         const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
         document.getElementById('dayHeader').innerText = currentDate.toLocaleDateString('en-GB', options);
-        // For 25-03-2025, row = 3; each subsequent day adds 1.
+        // Map: For 25-03-2025, row = 3; each subsequent day adds one.
         const diffDays = Math.floor((currentDate - minDate) / (24 * 60 * 60 * 1000));
         const dataRow = 3 + diffDays;
         document.getElementById('dayRow').setAttribute('data-row', dataRow);
@@ -371,7 +383,7 @@
           .catch(error => console.error('Error:', error));
       }
       
-      // Utility: Extract YouTube video ID from URL.
+      // Utility: Extract YouTube video ID.
       function extractYouTubeId(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
