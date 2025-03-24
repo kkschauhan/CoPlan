@@ -4,7 +4,7 @@
     <base target="_top">
     <title>CoPlan - Legends of Dholakpur Edition</title>
     <style>
-      /* Base Dark Mode Styling */
+      /* Base Dark Mode Styling for larger screens */
       body {
         font-family: 'Helvetica', sans-serif;
         background: #121212;
@@ -19,7 +19,7 @@
         background: #1e1e1e;
         padding: 25px;
         border-radius: 12px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.5);
         border: 1px solid #333;
       }
       h1 {
@@ -36,7 +36,6 @@
         background: #263238;
         border-radius: 8px;
       }
-      /* Sections: default side-by-side layout */
       .sections {
         display: flex;
         justify-content: space-around;
@@ -49,7 +48,7 @@
         background: #212121;
         border-radius: 8px;
         padding: 20px;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.5);
         border: 1px solid #333;
       }
       .section h2 {
@@ -75,12 +74,9 @@
         font-size: 18px;
         color: #66bb6a;
       }
-      /* Resource Section */
       .resource {
         text-align: center;
         margin-top: 25px;
-        /* Allow full-width on mobile */
-        max-width: 100%;
       }
       .resource a {
         color: #e0e0e0;
@@ -94,11 +90,9 @@
         display: block;
         margin: 15px auto;
         max-width: 320px;
-        width: 100%;
         border-radius: 8px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.7);
       }
-      /* Backlog Tracker */
       .backlog {
         text-align: center;
         margin-top: 20px;
@@ -108,7 +102,7 @@
         border-radius: 6px;
         border: 1px solid #444;
       }
-      /* Navigation Buttons on left/right sides of container */
+      /* Navigation Buttons for larger screens remain as before */
       .nav-button {
         position: absolute;
         top: 50%;
@@ -128,72 +122,70 @@
         right: -60px;
       }
       
-      /* Mobile adjustments for screens below 600px */
-      @media (max-width: 600px) {
-        body {
-          padding: 10px;
-        }
+      /* Mobile/Tablet Adjustments (max-width: 768px) */
+      @media (max-width: 768px) {
+        /* Container: Use flex layout to create two columns */
         .container {
-          width: 100%;
-          max-width: none;
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          margin: 0 auto;
-          border-radius: 12px 12px 0 0;
-          padding: 15px;
-          box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6);
-        }
-        h1 {
-          font-size: 20px;
-        }
-        h3 {
-          font-size: 16px;
-        }
-        /* Rearrange sections: Tuntun on top, Kshitij below */
-        .sections {
-          flex-direction: column;
+          display: flex;
+          flex-direction: row;
           align-items: center;
+          justify-content: space-between;
+          padding: 15px;
+        }
+        /* Create a left-column for tasks and a right column for the resource thumbnail */
+        .left-column {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin-right: 20px;
+        }
+        /* The sections (tasks) are now stacked vertically. Use order to place Tuntun above Kshitij. */
+        .sections {
+          display: flex;
+          flex-direction: column;
         }
         #tuntunSection {
-          order: 1;
-          width: 90%;
-          margin-bottom: 15px;
+          order: -1;
         }
-        #kshitijSection {
-          order: 2;
-          width: 90%;
+        .section {
+          width: 100%;
         }
-        /* Adjust navigation buttons to be inside the screen boundaries */
+        /* Right column for resource: ensure it's vertically centered */
+        .resource {
+          max-width: 40%;
+          align-self: center;
+          margin: 0;
+        }
+        /* Place the navigation buttons at the top left and top right corners of the container */
         .nav-button {
-          position: fixed;
-          top: 50%;
-          transform: translateY(-50%);
+          position: absolute;
+          top: 10px;
           font-size: 40px;
-          z-index: 10;
         }
         .nav-left {
-          left: 5px;
+          left: 10px;
         }
         .nav-right {
-          right: 5px;
+          right: 10px;
         }
-        /* Backlog Tracker fixed at the top */
+        /* Backlog tracker: move it below the container with extra spacing */
         .backlog {
-          position: fixed;
-          top: 10px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 90%;
-          max-width: 600px;
-          z-index: 10;
+          position: relative;
+          margin-top: 20px;
+        }
+        /* Adjust heading font sizes for readability on mobile */
+        h1 {
+          font-size: 22px;
+        }
+        h3 {
+          font-size: 18px;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Backlog Tracker (visible on mobile fixed at the top) -->
+    <!-- Backlog Tracker remains below the main container -->
     <div class="backlog" id="backlogTracker">
       <!-- Backlog counts loaded dynamically -->
     </div>
@@ -201,72 +193,75 @@
     <div class="container">
       <h1>CoPlan - Legends of Dholakpur Edition</h1>
       
-      <!-- Day Row -->
-      <div class="day-row" id="dayRow">
-        <h3 id="dayHeader"></h3>
-        
-        <div class="sections">
-          <!-- Tuntun's Container (order set in mobile) -->
-          <div class="section" id="tuntunSection">
-            <h2>Tuntun</h2>
-            <div class="task">
-              <label>
-                Newsletter + Quiz 
-                <input type="checkbox" id="tt_news" onchange="markDone('Newsletter + Quiz', 'Tuntun', this)">
-              </label>
-            </div>
-            <div class="task">
-              <label>
-                Editorial IE 
-                <input type="checkbox" id="tt_edit" onchange="markDone('Editorial IE', 'Tuntun', this)">
-              </label>
-            </div>
-            <div class="task">
-              <label>
-                Watch 
-                <input type="checkbox" id="tt_watch" onchange="markDone('Watch', 'Tuntun', this)">
-              </label>
-            </div>
-          </div>
-          
-          <!-- Kshitij's Container (order set in mobile) -->
-          <div class="section" id="kshitijSection">
-            <h2>Kshitij</h2>
-            <div class="task">
-              <label>
-                Newsletter + Quiz 
-                <input type="checkbox" id="ks_news" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
-              </label>
-            </div>
-            <div class="task">
-              <label>
-                Editorial IE 
-                <input type="checkbox" id="ks_edit" onchange="markDone('Editorial IE', 'Kshitij', this)">
-              </label>
-            </div>
-            <div class="task">
-              <label>
-                Watch 
-                <input type="checkbox" id="ks_watch" onchange="markDone('Watch', 'Kshitij', this)">
-              </label>
-            </div>
-          </div>
-        </div>
-        <div id="compliment"></div>
-      </div>
-      
-      <!-- Unified Resource Section -->
-      <div class="resource" id="resourceSection">
-        <!-- Content loaded dynamically -->
-      </div>
-      
-      <!-- Navigation Buttons (placed along the left/right sides of the container) -->
+      <!-- Navigation Buttons for mobile (positioned at top corners) -->
       <button class="nav-button nav-left" onclick="moveToPreviousDay()" title="Travel back in time">&#x23EA;</button>
       <button class="nav-button nav-right" onclick="moveToNextDay()" title="Travel to the future">&#x23E9;</button>
+      
+      <!-- For mobile, wrap tasks and resource into two columns -->
+      <div class="mobile-wrapper">
+        <div class="left-column">
+          <!-- Day Row with tasks -->
+          <div class="day-row" id="dayRow">
+            <h3 id="dayHeader"></h3>
+            <div class="sections">
+              <!-- Section for Kshitij -->
+              <div class="section" id="kshitijSection">
+                <h2>Kshitij</h2>
+                <div class="task">
+                  <label>
+                    Newsletter + Quiz 
+                    <input type="checkbox" id="ks_news" onchange="markDone('Newsletter + Quiz', 'Kshitij', this)">
+                  </label>
+                </div>
+                <div class="task">
+                  <label>
+                    Editorial IE 
+                    <input type="checkbox" id="ks_edit" onchange="markDone('Editorial IE', 'Kshitij', this)">
+                  </label>
+                </div>
+                <div class="task">
+                  <label>
+                    Watch 
+                    <input type="checkbox" id="ks_watch" onchange="markDone('Watch', 'Kshitij', this)">
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Section for Tuntun -->
+              <div class="section" id="tuntunSection">
+                <h2>Tuntun</h2>
+                <div class="task">
+                  <label>
+                    Newsletter + Quiz 
+                    <input type="checkbox" id="tt_news" onchange="markDone('Newsletter + Quiz', 'Tuntun', this)">
+                  </label>
+                </div>
+                <div class="task">
+                  <label>
+                    Editorial IE 
+                    <input type="checkbox" id="tt_edit" onchange="markDone('Editorial IE', 'Tuntun', this)">
+                  </label>
+                </div>
+                <div class="task">
+                  <label>
+                    Watch 
+                    <input type="checkbox" id="tt_watch" onchange="markDone('Watch', 'Tuntun', this)">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div id="compliment"></div>
+          </div>
+        </div>
+        <!-- Right column for Resource -->
+        <div class="resource" id="resourceSection">
+          <!-- Content loaded dynamically -->
+        </div>
+      </div>
     </div>
-  
+    
     <script>
-      // Set your deployed Google Apps Script Web App URL here.
+      // API URL from your deployed Google Apps Script Web App.
       const API_URL = "https://script.google.com/macros/s/AKfycbzss4Ki0Ods_s0sW5TAhwtLbUuF1Be9CFZBw1NvGCgS5rX6M-VMFevYZOx3KoBRKlQI/exec";
       
       let currentDate;
@@ -283,7 +278,7 @@
       function updateDateDisplay() {
         const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
         document.getElementById('dayHeader').innerText = currentDate.toLocaleDateString('en-GB', options);
-        // Map: For 25-03-2025, row = 3; each subsequent day adds one.
+        // For 25-03-2025, row = 3; each subsequent day adds one.
         const diffDays = Math.floor((currentDate - minDate) / (24 * 60 * 60 * 1000));
         const dataRow = 3 + diffDays;
         document.getElementById('dayRow').setAttribute('data-row', dataRow);
@@ -383,7 +378,7 @@
           .catch(error => console.error('Error:', error));
       }
       
-      // Utility: Extract YouTube video ID.
+      // Utility: Extract YouTube video ID from a URL.
       function extractYouTubeId(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
