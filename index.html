@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <base target="_top">
     <title>CoPlan – Legends of Dholakpur Edition</title>
     <style>
@@ -17,7 +18,7 @@
         max-width: 900px;
         margin: auto;
         background: #1e1e1e;
-        padding: 25px 60px; /* extra horizontal space for nav buttons on desktop */
+        padding: 25px 60px; /* extra horizontal space for nav buttons */
         border-radius: 12px;
         box-shadow: 0 6px 12px rgba(0,0,0,0.5);
         border: 1px solid #333;
@@ -107,7 +108,7 @@
         border-radius: 6px;
         border: 1px solid #444;
       }
-      /* Navigation Buttons for Desktop: inside container at top left/right */
+      /* Navigation Buttons for Desktop: top left/right inside container */
       .nav-button {
         position: absolute;
         top: 10px;
@@ -132,8 +133,7 @@
           padding: 20px;
         }
         /* Hide desktop layout */
-        .sections, .resource#resourceSection { display: none; }
-        
+        #sectionsContainer, #resourceSection { display: none; }
         /* Mobile layout: two-column structure */
         .mobile-wrapper {
           display: flex;
@@ -178,9 +178,11 @@
           margin: auto;
           max-width: 100%;
         }
-        /* Navigation buttons for mobile: position them at the top corners of container */
+        /* Navigation buttons for mobile: top left/right of container */
         .nav-button {
           top: 10px;
+          font-size: 36px;
+          color: #FFA726 !important;
         }
         .nav-left {
           left: 10px;
@@ -193,7 +195,7 @@
   </head>
   <body>
     <div class="container">
-      <!-- Navigation Buttons (common to both layouts) -->
+      <!-- Navigation Buttons (common for both layouts) -->
       <button class="nav-button nav-left" onclick="moveToPreviousDay()" title="Travel back in time">&#x23EA;</button>
       <button class="nav-button nav-right" onclick="moveToNextDay()" title="Travel to the future">&#x23E9;</button>
       
@@ -401,7 +403,6 @@
             } else {
               content = `<h3>No Resource Available</h3>`;
             }
-            // Set content for desktop and mobile resource sections.
             document.getElementById('resourceSection').innerHTML = content;
             document.getElementById('resourceSectionMobile').innerHTML = content;
           })
@@ -447,7 +448,7 @@
           .catch(error => console.error('Error:', error));
       }
       
-      // Utility: Extract YouTube video ID from a URL.
+      // Utility: Extract YouTube video ID from URL.
       function extractYouTubeId(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
